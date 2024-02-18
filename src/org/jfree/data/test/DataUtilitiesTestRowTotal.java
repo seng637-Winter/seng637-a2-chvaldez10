@@ -52,6 +52,25 @@ public class DataUtilitiesTestRowTotal {
 			}});
 	}
 	
+	@Test(expected = IllegalArgumentException.class)
+	public void testCalculateRowTotalWithNullData() {
+	    DataUtilities.calculateRowTotal(null, 0);
+	}
+	
+	@Test
+	public void testCalculateRowWithInvalidRow() {
+	    final Values2D values = context.mock(Values2D.class);
+	    context.checking(new Expectations() {{
+	        // Add one row
+	        oneOf(values).getRowCount();
+	        will(returnValue(1));
+	    }});
+
+	    double result = DataUtilities.calculateRowTotal(values, 1);
+	    assertEquals("The row total should be 0.0 for an invalid row", 0.0, result, 0.00001d);
+	    context.assertIsSatisfied();
+	}
+	
 	@After
 	public void tearDown() {
 		context.assertIsSatisfied();
