@@ -53,17 +53,55 @@ public class RangeShiftTest {
     }
     
     @Test
-    public void shifteRemainsConstant() {
-        double shiftedSize = positiveShiftedRange.getUpperBound() - positiveShiftedRange.getLowerBound();
-        assertEquals("Shifted range size should remain constant",
-                2.0, shiftedSize, .000000001d);
-    }
-    
-    @Test
     public void testShiftWithLargeDelta() {
         assertEquals("Lower bound after large shift should be correct",
                 999999, largeShiftedRange.getLowerBound(), .000000001d);
         assertEquals("Upper bound after large shift should be correct",
                 1000001, largeShiftedRange.getUpperBound(), .000000001d);
+    }
+    
+    @Test
+    public void testShiftedLength() {
+        double shiftedSize = positiveShiftedRange.getLength();
+        assertEquals("Shifted range size should remain constant",
+                2.0, shiftedSize, .000000001d);
+    }
+   
+    @Test
+    public void testCentralValue() {
+    	double shiftedCentralValue = positiveShiftedRange.getCentralValue();
+        assertEquals("Shifted central value should be 2",
+                2.0, shiftedCentralValue, .000000001d);
+    }
+    
+    @Test
+    public void testIntersect() {
+        assertEquals("Shifted Range shouold intersect.",
+                true, positiveShiftedRange.intersects(1, 3));
+    }  
+    
+    @Test
+    public void testNoIntersect() {
+        assertEquals("Shifted Range shouold intersect.",
+                false, positiveShiftedRange.intersects(4, 6));
+    }  
+    
+    @Test
+    public void testRepeatedShifts() {
+        Range initialRange = new Range(-100, 100);
+        Range shiftedRight = Range.shift(initialRange, 200);
+        Range shiftedLeftBack = Range.shift(shiftedRight, -200);
+        assertEquals("Shifting right then back should return to original lower bound",
+                     initialRange.getLowerBound(), shiftedLeftBack.getLowerBound(), 0.000000001d);
+        assertEquals("Shifting right then back should return to original upper bound",
+                     initialRange.getUpperBound(), shiftedLeftBack.getUpperBound(), 0.000000001d);
+    }
+    
+    @Test
+    public void testShiftToDoubleLimits() {
+        Range baseRange = new Range(1e307, 1e307 + 10);
+        Range shiftedRange = Range.shift(baseRange, 1e307);
+        assertTrue("After a large shift, range should not collapse to a point",
+                   shiftedRange.getLength() > 0);
     }
 }
