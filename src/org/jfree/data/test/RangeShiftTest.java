@@ -53,9 +53,13 @@ public class RangeShiftTest {
     }
     
     @Test
-    public void testShiftWithLargeDelta() {
+    public void testShiftWithLargeDeltaLowerBound() {
         assertEquals("Lower bound after large shift should be correct",
                 999999, largeShiftedRange.getLowerBound(), .000000001d);
+    }
+    
+    @Test
+    public void testShiftWithLargeDeltaUpperBound() {
         assertEquals("Upper bound after large shift should be correct",
                 1000001, largeShiftedRange.getUpperBound(), .000000001d);
     }
